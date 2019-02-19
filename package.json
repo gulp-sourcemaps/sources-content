@@ -1,6 +1,6 @@
 {
   "name": "@gulp-sourcemaps/sources-content",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Gulp plugin for loading or clearing sources content of a sourcemap.",
   "author": "Gulp-sourcemaps Team",
   "repository": "gulp-sourcemaps/sources-content",
