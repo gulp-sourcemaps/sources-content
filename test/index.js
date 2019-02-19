@@ -141,6 +141,60 @@ describe('sourcesContent', function() {
     runTest([file], assert, done, { clear: true });
   });
 
+  it('clear function sets sourcesContent elements null but not sources', function(done) {
+    var file = makeFile();
+    file.sourceMap.sourcesContent = [helloWorld, helloWorld2];
+
+    function assert(files) {
+      expect(files.length).toEqual(1);
+      expect(typeof files[0].sourceMap).toEqual('object');
+      expect(files[0].sourceMap.sources.length).toEqual(2);
+      expect(files[0].sourceMap.sourcesContent.length).toEqual(2);
+      expect(files[0].sourceMap.sourcesContent[0]).toEqual(helloWorld);
+      expect(files[0].sourceMap.sourcesContent[1]).toEqual(null);
+    }
+
+    function clear(filename, mainFile) {
+      expect(mainFile).toEqual(file.sourceMap.file);
+      return filename !== mainFile;
+    }
+
+    runTest([file], assert, done, { clear: clear });
+  });
+
+  it('always true clear function deletes sourcesContent but not sources', function(done) {
+    var file = makeFile();
+    file.sourceMap.sourcesContent = [helloWorld, helloWorld2];
+
+    function assert(files) {
+      expect(files.length).toEqual(1);
+      expect(typeof files[0].sourceMap).toEqual('object');
+      expect(files[0].sourceMap.sources.length).toEqual(2);
+      expect(typeof files[0].sourceMap.sourcesContent).toEqual('undefined');
+    }
+
+    function clear() {
+      return true;
+    }
+
+    runTest([file], assert, done, { clear: clear });
+  });
+
+  it('clear deletes sourcesContent even with no sources', function(done) {
+    var file = makeFile();
+    file.sourceMap.sourcesContent = ['/**/', '/**/'];
+    delete file.sourceMap.sources;
+
+    function assert(files) {
+      expect(files.length).toEqual(1);
+      expect(typeof files[0].sourceMap).toEqual('object');
+      expect(typeof files[0].sourceMap.sources).toEqual('undefined');
+      expect(typeof files[0].sourceMap.sourcesContent).toEqual('undefined');
+    }
+
+    runTest([file], assert, done, { clear: true });
+  });
+
   it('clear ignores a file without sourceMap property', function(done) {
     var file = makeFile();
     delete file.sourceMap;

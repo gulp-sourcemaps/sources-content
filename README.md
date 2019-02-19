@@ -36,6 +36,23 @@ Takes a object containing options for this plugin.
 Seting this option `true` will cause the sources content to be deleted instead
 of initialized.
 
+A function can be passed for clear, this allows removing sources content associated
+with some files but not others.  The function is called with `filename` argument for
+each source, returning `true` causes the contents for that file to be cleared.
+
+```js
+gulp.src(...)
+  /* ... */
+  .pipe(sourcesContent({
+    clear: function(filename, mainFile) {
+      /* Clear all sourceContent elements except the one
+       * associated with sourceMap.file. */
+      return filename !== mainFile
+    }
+  }))
+  .pipe(gulp.dest(...))
+```
+
 ## License
 
 MIT

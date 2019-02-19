@@ -18,7 +18,21 @@ function sourcesContent(options) {
     }
 
     if (options.clear) {
-      delete sourceMap.sourcesContent;
+      var allClear = true;
+      if (typeof options.clear === 'function' && sourceMap.sources
+          && sourceMap.sourcesContent) {
+        sourceMap.sources.forEach(function(filename, idx) {
+          if (options.clear(filename, sourceMap.file)) {
+            sourceMap.sourcesContent[idx] = null;
+          } else {
+            allClear = false;
+          }
+        });
+      }
+
+      if (allClear) {
+        delete sourceMap.sourcesContent;
+      }
 
       return cb(null, file);
     }
